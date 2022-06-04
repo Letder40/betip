@@ -20,7 +20,9 @@ echo -e "${yellow}\n[#] Interfaces:${end}"
 
 num=1
 for i in $(ip a | grep -P "^\d{1}: " | sed "s/[1-9]: //g" | awk '{print $1}' | sed "s/://g"); do
-   echo -e "${red}>>${end}  $num: $i"
+   mac=$(ip a | grep -oG '..:..:..:..:..:..' | grep -v "ff:ff:ff:ff:ff:ff" | sort -u | xargs | cut -d " " -f $num) 
+   echo -e "$green   $num: $i: $end"
+   echo -e "$red>> $end$mac"
    ((num++))
 done
 
