@@ -1,16 +1,26 @@
 #!/bin/bash
+
+#colors
+red="\e[91m"
+yellow="\e[33m"
+end="\e[0m"
+green="\e[32m"
+
+#vars
 ip=$(ip a | grep -Po "\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\/\d{1,2}" | grep -v "^127\." | grep -v "^255\." | grep -v "255$" | grep -v "\.0$")
 gateway=$(ip route | awk '{print $3}' | grep -P "\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}")
 interfaces=$(ip a | grep -P "^\d{1}: " | sed "s/[1-9]: //g" | awk '{print $1}' | sed "s/://g")
 netmask=$(echo $ip | grep -Po "\/\d{1,2}")
 
-echo -e "\n[#] Relevant ip address information:"
-echo -e "  Current ip:\n>> $ip \n  Current gateway:\n>> $gateway$netmask "
-echo -e "\n[#] Interfaces:"
+#script
+
+echo -e "${yellow}[#] Relevant ip address information:${end}"
+echo -e "${green}   Current ip:${end} \n${red}>>${end} $ip \n  ${green} Current gateway:${end}\n${red}>>${end} $gateway$netmask "
+echo -e "${yellow}\n[#] Interfaces:${end}"
 
 num=1
 for i in $(ip a | grep -P "^\d{1}: " | sed "s/[1-9]: //g" | awk '{print $1}' | sed "s/://g"); do
-   echo -e ">>  $num: $i"
+   echo -e "${red}>>${end}  $num: $i"
    ((num++))
 done
 
