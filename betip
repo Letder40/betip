@@ -12,8 +12,19 @@ gateway=$(ip route | awk '{print $3}' | grep -P "\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1
 interfaces=$(ip a | grep -P "^\d{1}: " | sed "s/[1-9]: //g" | awk '{print $1}' | sed "s/://g")
 netmask=$(echo $ip | grep -Po "\/\d{1,2}")
 
-#script
+#copy interface
+copynum=1
+if [[ $1 == "-ci" && $2 =~ [0-9] ]]; then
+   for iface in $interfaces; do
+      interface[$copynum]=$iface
+      echo ${interface[$2]} | tr -d "\n" | xclip -sel clip
+      ((copynum++))
+   done
+   echo -e "  ${green}[${red}#${green}] ${red}${interface[$2]}${green} has been copied to clipboard ${end}"
+   exit 0
+fi
 
+#base script
 echo -e "${yellow}[#] Relevant ip address information:${end}"
 echo -e "${green}   Current ip:${end} \n${red}>>${end} $ip \n  ${green} Current gateway:${end}\n${red}>>${end} $gateway$netmask "
 echo -e "${yellow}\n[#] Interfaces:${end}"
@@ -25,5 +36,4 @@ for i in $(ip a | grep -P "^\d{1}: " | sed "s/[1-9]: //g" | awk '{print $1}' | s
    echo -e "$red>> $end$mac"
    ((num++))
 done
-
 
